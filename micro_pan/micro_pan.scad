@@ -1,7 +1,7 @@
-use <../mcad/involute_gears.scad>
-use <../mcad/metric_fastners.scad>
-use <../lib/servos.scad>
-use <../lib/cameras.scad>
+use <mcad/involute_gears.scad>
+use <mcad/metric_fastners.scad>
+use <../servos.scad>
+use <../cameras.scad>
 
 $fn=60;
 
@@ -119,4 +119,34 @@ module nano_camera_mount_and_gear() {
     }
 }
 
-nano_camera_mount_and_gear();
+module harness() {
+    translate([96, -126, 0])
+    import("harness_center_micro.stl");
+}
+
+module demo() {
+    color("gray")
+    mg90();
+    
+    translate([0, 0, 30]) {
+        mirror([0, 0, 1])
+        color("red")
+        harness();
+    }
+    
+    translate([0, 0, 27]) {        
+        mirror([0, 0, 1])
+        rotate([0, 0, 360/32])
+        servo_shaft_and_gear();
+        
+        color("silver")
+        translate([12, 0, -2])
+        cylinder(h=18, r=1.5);
+        
+        translate([12, 0, 4.6])
+        rotate([0, 0, 90])
+        nano_camera_mount_and_gear();
+    }
+}
+    
+demo();
