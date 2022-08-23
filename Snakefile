@@ -1,14 +1,33 @@
-from pathlib import Path
-from snakemake.logging import logger
+import collections
+import csv
 import re
 
-projects, files = glob_wildcards("{project}/{file}.scad")
-zip_extensions = ['stl', 'png']
+from snakemake.logging import logger
+
+projects = {path.parent.name for path in Path.cwd().glob("*/*.scad")}
+
+logger.debug(f"Projects: {projects}")
+                    
+rule all:
+    input: expand("scadfiles/{project}/{project}.zip", project=projects)
+
+def scad_derivatives(wildcards):
+    project = wildcards.project
+    files, = glob_wildcards(f"scadfiles/{project}/{{file}}.scad")
+    return expand(f"scadfiles/{project}/{{file}}.{{extension}}", file=files, extension=['stl', 'png'])
+
+rule zip:
+    input: scad_derivatives
+    output: "scadfiles/{project}/{project}.zip"
+    shell: "zip {output} {input}"
 
 include_regex = re.compile("^(include|use) <(.*)>;?$")
 
 def search_scad_dependencies(scad_path):
     logger.debug(f"Search {scad_path} for dependencies")
+
+    if not scad_path.exists():
+        return
 
     with open(scad_path, 'r') as scad_file:
         for line_number, line in enumerate(scad_file):
@@ -26,21 +45,32 @@ def search_scad_dependencies(scad_path):
 def get_scad_dependencies(wildcards):
     scad_path = Path(f"{wildcards.project}/{wildcards.file}.scad")
     return search_scad_dependencies(scad_path)
-                    
-rule all:
-    input: expand("{project}/{project}.zip", project=projects)
-
-rule zip:
-    input: expand("{project}/{file}.{extension}", project=projects, file=files, extension=zip_extensions)
-    output: "{project}/{project}.zip"
-    shell: "zip {output} {input}"
 
 rule scad:
+    """Runs OpenSCAD to generate STL and PNG for every SCAD file in a project directory."""
     input:
+        "scad",
         scad_file = "{project}/{file}.scad",
         dependencies = get_scad_dependencies
     output: "{project}/{file}.{extension}"
     wildcard_constraints:
         extension="(stl|png)"
-    shell: "scad -o {output} {input.scad_file}"
+    shell: """
+        echo "Generating {output}"
+        scad -o {output} {input.scad_file}
+        echo "Generated {output}"
+    """
 
+def read_csv(filename):
+    with open(filename, 'r') as input_file:
+        reader = csv.DictReader(input_file)
+        return {
+            "headers": reader.fieldnames,
+            "rows": list(row for row in reader)
+        }
+
+rule data_file:
+    """Converts CSV data files to OpenSCAD tables."""
+    input: csv="scadfiles/{filename}.csv"
+    output: "scadfiles/{filename}.scad"
+    script: "scripts/csv_to_scad.py"
