@@ -4,9 +4,9 @@ import re
 
 from snakemake.logging import logger
 
-projects = {path.parent.name for path in Path.cwd().glob("*/*.scad")}
+projects = {path.parent.name for path in Path('scadfiles').glob("*/*.scad")}
 
-logger.debug(f"Projects: {projects}")
+logger.info(f"Projects: {projects}")
                     
 rule all:
     input: expand("scadfiles/{project}/{project}.zip", project=projects)
@@ -46,18 +46,20 @@ def get_scad_dependencies(wildcards):
     scad_path = Path(f"{wildcards.project}/{wildcards.file}.scad")
     return search_scad_dependencies(scad_path)
 
-rule scad:
-    """Runs OpenSCAD to generate STL and PNG for every SCAD file in a project directory."""
+rule export_stl:
+    """Runs OpenSCAD to generate STL for every SCAD file in a project directory."""
     input:
         "scad",
         scad_file = "{project}/{file}.scad",
         dependencies = get_scad_dependencies
-    output: "{project}/{file}.{extension}"
+    output:
+        stl="{project}/{file}.stl",
+        png="{project}/{file}.png",
     wildcard_constraints:
         extension="(stl|png)"
     shell: """
         echo "Generating {output}"
-        scad -o {output} {input.scad_file}
+        scad {input.scad_file} -o {output.stl} -o {output.png}
         echo "Generated {output}"
     """
 

@@ -6,5 +6,4 @@ OPENSCAD=/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD
 ${OPENSCAD} \
     --hardwarnings \
     --colorscheme "Tomorrow Night" \
-    --export-format asciistl \
     "$@"
