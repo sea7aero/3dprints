@@ -1,0 +1,1 @@
+Designs for mounting plates and accessories for the [VirtualPilot Sentinel AAT](https://www.virtualpilot.co.uk/index.php?route=product/product&product_id=59).

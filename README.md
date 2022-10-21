@@ -8,6 +8,7 @@ Some 3d designs created for various SEA7 Aero projects.
 
 ## Building
 
+Prerequisites: Python + Poetry
+
 1. Clone this repository: `git clone git@github.com:sea7aero/3dprints.git`
-1. `poetry install`
 1. `./build`

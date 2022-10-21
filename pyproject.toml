@@ -8,7 +8,7 @@ authors = ["Jason Walker <ungood@onetrue.name>"]
 python = "^3.9"
 
 [tool.poetry.dev-dependencies]
-snakemake = "7.6.2"
+snakemake = "^7.15.1"
 pandas = "^1.4.3"
 
 [build-system]
