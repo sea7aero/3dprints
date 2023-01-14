@@ -2,6 +2,9 @@
 // included in the official AAT STLs
 // https://github.com/aat-sentinel/AAT-lite-hardware/tree/main/Extras/AAT%20battery%20panel%20mount
 
+include <../globals.scad>
+use <../shapes.scad>
+
 // Dimensions of the blocks on a side panel of the Sentinel AAT
 panel_block_width = 16;
 panel_block_length = 30;
@@ -27,3 +30,6 @@ module panel_mounting_holes(height) {
         }
     }
 }
+
+panel_mounting_holes(3.4);
+

@@ -47,27 +47,9 @@ module wire_passthrough() {
     }
 }
 
-module panel_mounting_holes() {
-
-    // There are 3 screw holes, evenly spaced, in a single column centered on the blocks.
-    x_offset = panel_block_length / 4;
-    y_offset = (panel_block_separation / 2) + panel_block_width / 2;
-    
-    for(x = [-1, 0, 1]) {
-        for(y = [-1, 1]) {
-            translate([x * x_offset, y * y_offset, -epsilon])
-            xy_cylinder(
-                h = plate_thickness + (2 * epsilon),
-                d1 = panel_screw_diameter,
-                d2 = panel_screwhead_diameter
-            );
-        }
-    }
-}
-
 difference() {
     mounting_plate();
     vrx_mounting_holes();  
     wire_passthrough();
-    panel_mounting_holes(panel_thickness);  
+    panel_mounting_holes(plate_thickness);  
 }
