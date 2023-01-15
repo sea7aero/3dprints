@@ -8,11 +8,15 @@ m4_head_diameter = 7;
 m4_head_depth = 4.5;
 
 thickness = 3.4;
-screw_diameter = 16.25;
+screw_diameter = 6.5;
 radius = 5.65;
 
 antenna_width = 151.64;
 antenna_mount_height = 65.4;
+antenna_ridge_height = 3;
+antenna_ridge_width = 1.5;
+
+wire_screw_cutout_radius = 21/2;
 
 tracker_mount_width = 90.6;
 
@@ -56,6 +60,13 @@ module mount() {
         
         translate([0, mount_offset, thickness + (-20 * epsilon)])
         tracker_mount_holes(m4_head_diameter, 100);
+        
+        translate([0, (antenna_mount_height/2 + antenna_ridge_width/2) + epsilon, 0])
+        cube([1000, antenna_ridge_width, antenna_ridge_height], center = true);
+        
+        translate([0, -antenna_mount_height/2 - wire_screw_cutout_radius/2, -10])
+        linear_extrude(150)
+        circle(r = wire_screw_cutout_radius);
     }
 }
 
