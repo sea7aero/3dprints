@@ -1,12 +1,12 @@
-## SEA7 Aero 3d Prints
+# SEA7 Aero 3d Prints
 
 Some 3d designs created for various SEA7 Aero projects.
 
-### Projects
+## Projects
 
 * micro_pan: [Micro Servo 2:1 Pan](https://www.printables.com/model/256436-micro-servo-21-pan)
 
-### Building
+## Building
 
 Prerequisites: Python + Poetry
 
